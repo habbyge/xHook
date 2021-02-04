@@ -33,43 +33,43 @@ extern "C" {
 #endif
 
 typedef struct {
-    const char* pathname;
-    
-    ElfW(Addr)  base_addr;
-    ElfW(Addr)  bias_addr;
-    
-    ElfW(Ehdr)* ehdr;
-    ElfW(Phdr)* phdr;
+  const char* pathname;
 
-    ElfW(Dyn)* dyn; //.dynamic
-    ElfW(Word) dyn_sz;
+  ElfW(Addr)  base_addr;
+  ElfW(Addr)  bias_addr;
 
-    const char* strtab; //.dynstr (string-table)
-    ElfW(Sym)*  symtab; //.dynsym (symbol-index to string-table's offset)
+  ElfW(Ehdr)* ehdr;
+  ElfW(Phdr)* phdr;
 
-    ElfW(Addr)  relplt; //.rel.plt or .rela.plt
-    ElfW(Word)  relplt_sz;
-    
-    ElfW(Addr)  reldyn; //.rel.dyn or .rela.dyn
-    ElfW(Word)  reldyn_sz;
-    
-    ElfW(Addr)  relandroid; //android compressed rel or rela
-    ElfW(Word)  relandroid_sz;
+  ElfW(Dyn)* dyn; //.dynamic
+  ElfW(Word) dyn_sz;
 
-    //for ELF hash
-    uint32_t*   bucket;
-    uint32_t    bucket_cnt;
-    uint32_t*   chain;
-    uint32_t    chain_cnt; //invalid for GNU hash
+  const char* strtab; //.dynstr (string-table)
+  ElfW(Sym)*  symtab; //.dynsym (symbol-index to string-table's offset)
 
-    //append for GNU hash
-    uint32_t    symoffset;
-    ElfW(Addr)* bloom;
-    uint32_t    bloom_sz;
-    uint32_t    bloom_shift;
-    
-    int         is_use_rela;
-    int         is_use_gnu_hash;
+  ElfW(Addr)  relplt; //.rel.plt or .rela.plt
+  ElfW(Word)  relplt_sz;
+
+  ElfW(Addr)  reldyn; //.rel.dyn or .rela.dyn
+  ElfW(Word)  reldyn_sz;
+
+  ElfW(Addr)  relandroid; //android compressed rel or rela
+  ElfW(Word)  relandroid_sz;
+
+  //for ELF hash
+  uint32_t*   bucket;
+  uint32_t    bucket_cnt;
+  uint32_t*   chain;
+  uint32_t    chain_cnt; //invalid for GNU hash
+
+  //append for GNU hash
+  uint32_t    symoffset;
+  ElfW(Addr)* bloom;
+  uint32_t    bloom_sz;
+  uint32_t    bloom_shift;
+
+  int         is_use_rela;
+  int         is_use_gnu_hash;
 } xh_elf_t;
 
 int xh_elf_init(xh_elf_t* self, uintptr_t base_addr, const char* pathname);

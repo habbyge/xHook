@@ -64,20 +64,20 @@
 
 #define SPLAY_HEAD(name, type)                                          \
 struct name {                                                           \
-        struct type *sph_root; /* root of the tree */                   \
+  struct type *sph_root; /* root of the tree */                         \
 }
 
 #define SPLAY_INITIALIZER(root)                                         \
-        { NULL }
+  { NULL }
 
 #define SPLAY_INIT(root) do {                                           \
-        (root)->sph_root = NULL;                                        \
+  (root)->sph_root = NULL;                                              \
 } while (/*CONSTCOND*/ 0)
 
 #define SPLAY_ENTRY(type)                                               \
 struct {                                                                \
-        struct type *spe_left; /* left element */                       \
-        struct type *spe_right; /* right element */                     \
+  struct type *spe_left; /* left element */                             \
+  struct type *spe_right; /* right element */                           \
 }
 
 #define SPLAY_LEFT(elm, field)          (elm)->field.spe_left
@@ -87,34 +87,34 @@ struct {                                                                \
 
 /* SPLAY_ROTATE_{LEFT,RIGHT} expect that tmp hold SPLAY_{RIGHT,LEFT} */
 #define SPLAY_ROTATE_RIGHT(head, tmp, field) do {                       \
-        SPLAY_LEFT((head)->sph_root, field) = SPLAY_RIGHT(tmp, field);  \
-        SPLAY_RIGHT(tmp, field) = (head)->sph_root;                     \
-        (head)->sph_root = tmp;                                         \
+  SPLAY_LEFT((head)->sph_root, field) = SPLAY_RIGHT(tmp, field);        \
+  SPLAY_RIGHT(tmp, field) = (head)->sph_root;                           \
+  (head)->sph_root = tmp;                                               \
 } while (/*CONSTCOND*/ 0)
         
 #define SPLAY_ROTATE_LEFT(head, tmp, field) do {                        \
-        SPLAY_RIGHT((head)->sph_root, field) = SPLAY_LEFT(tmp, field);  \
-        SPLAY_LEFT(tmp, field) = (head)->sph_root;                      \
-        (head)->sph_root = tmp;                                         \
+  SPLAY_RIGHT((head)->sph_root, field) = SPLAY_LEFT(tmp, field);        \
+  SPLAY_LEFT(tmp, field) = (head)->sph_root;                            \
+  (head)->sph_root = tmp;                                               \
 } while (/*CONSTCOND*/ 0)
 
 #define SPLAY_LINKLEFT(head, tmp, field) do {                           \
-        SPLAY_LEFT(tmp, field) = (head)->sph_root;                      \
-        tmp = (head)->sph_root;                                         \
-        (head)->sph_root = SPLAY_LEFT((head)->sph_root, field);         \
+  SPLAY_LEFT(tmp, field) = (head)->sph_root;                            \
+  tmp = (head)->sph_root;                                               \
+  (head)->sph_root = SPLAY_LEFT((head)->sph_root, field);               \
 } while (/*CONSTCOND*/ 0)
 
 #define SPLAY_LINKRIGHT(head, tmp, field) do {                          \
-        SPLAY_RIGHT(tmp, field) = (head)->sph_root;                     \
-        tmp = (head)->sph_root;                                         \
-        (head)->sph_root = SPLAY_RIGHT((head)->sph_root, field);        \
+  SPLAY_RIGHT(tmp, field) = (head)->sph_root;                           \
+  tmp = (head)->sph_root;                                               \
+  (head)->sph_root = SPLAY_RIGHT((head)->sph_root, field);              \
 } while (/*CONSTCOND*/ 0)
 
 #define SPLAY_ASSEMBLE(head, node, left, right, field) do {             \
-        SPLAY_RIGHT(left, field) = SPLAY_LEFT((head)->sph_root, field); \
-        SPLAY_LEFT(right, field) = SPLAY_RIGHT((head)->sph_root, field);\
-        SPLAY_LEFT((head)->sph_root, field) = SPLAY_RIGHT(node, field); \
-        SPLAY_RIGHT((head)->sph_root, field) = SPLAY_LEFT(node, field); \
+  SPLAY_RIGHT(left, field) = SPLAY_LEFT((head)->sph_root, field);       \
+  SPLAY_LEFT(right, field) = SPLAY_RIGHT((head)->sph_root, field);      \
+  SPLAY_LEFT((head)->sph_root, field) = SPLAY_RIGHT(node, field);       \
+  SPLAY_RIGHT((head)->sph_root, field) = SPLAY_LEFT(node, field);       \
 } while (/*CONSTCOND*/ 0)
 
 /* Generates prototypes and inline functions */
@@ -127,8 +127,7 @@ struct type *name##_SPLAY_REMOVE(struct name *, struct type *);         \
                                                                         \
 /* Finds the node with the same key as elm */                           \
 static __inline struct type *                                           \
-name##_SPLAY_FIND(struct name *head, struct type *elm)                  \
-{                                                                       \
+name##_SPLAY_FIND(struct name *head, struct type *elm) {                \
         if (SPLAY_EMPTY(head))                                          \
                 return(NULL);                                           \
         name##_SPLAY(head, elm);                                        \

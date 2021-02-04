@@ -37,30 +37,27 @@
                        XH_VERSION_TO_STR(XH_VERSION_EXTRA)
 
 #if defined(__arm__)
-#define XH_VERSION_ARCH "arm"
+  #define XH_VERSION_ARCH "arm"
 #elif defined(__aarch64__)
-#define XH_VERSION_ARCH "aarch64"
+  #define XH_VERSION_ARCH "aarch64"
 #elif defined(__i386__)
-#define XH_VERSION_ARCH "x86"
+  #define XH_VERSION_ARCH "x86"
 #elif defined(__x86_64__)
-#define XH_VERSION_ARCH "x86_64"
+  #define XH_VERSION_ARCH "x86_64"
 #else
-#define XH_VERSION_ARCH "unknown"
+  #define XH_VERSION_ARCH "unknown"
 #endif
 
 #define XH_VERSION_STR_FULL "libxhook "XH_VERSION_STR" ("XH_VERSION_ARCH")"
 
-unsigned int xh_version()
-{
-    return XH_VERSION;
+unsigned int xh_version() {
+  return XH_VERSION;
 }
 
-const char *xh_version_str()
-{
-    return XH_VERSION_STR;
+const char* xh_version_str() {
+  return XH_VERSION_STR;
 }
 
-const char *xh_version_str_full()
-{
-    return XH_VERSION_STR_FULL;
+const char* xh_version_str_full() {
+  return XH_VERSION_STR_FULL;
 }
