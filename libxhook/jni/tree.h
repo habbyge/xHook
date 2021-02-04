@@ -137,9 +137,8 @@ name##_SPLAY_FIND(struct name *head, struct type *elm)                  \
         return (NULL);                                                  \
 }                                                                       \
                                                                         \
-static __inline struct type *                                          \
-name##_SPLAY_NEXT(struct name *head, struct type *elm)                 \
-{                                                                       \
+static __inline struct type *                                           \
+name##_SPLAY_NEXT(struct name *head, struct type *elm) {                \
         name##_SPLAY(head, elm);                                        \
         if (SPLAY_RIGHT(elm, field) != NULL) {                          \
                 elm = SPLAY_RIGHT(elm, field);                          \
@@ -152,8 +151,7 @@ name##_SPLAY_NEXT(struct name *head, struct type *elm)                 \
 }                                                                       \
                                                                         \
 static __inline struct type *                                           \
-name##_SPLAY_MIN_MAX(struct name *head, int val)                        \
-{                                                                       \
+name##_SPLAY_MIN_MAX(struct name *head, int val) {                      \
         name##_SPLAY_MINMAX(head, val);                                 \
         return (SPLAY_ROOT(head));                                      \
 }
@@ -172,13 +170,13 @@ name##_SPLAY_INSERT(struct name *head, struct type *elm)                \
             name##_SPLAY(head, elm);                                    \
             __comp = (cmp)(elm, (head)->sph_root);                      \
             if(__comp < 0) {                                            \
-                    SPLAY_LEFT(elm, field) = SPLAY_LEFT((head)->sph_root, field);\
-                    SPLAY_RIGHT(elm, field) = (head)->sph_root;         \
-                    SPLAY_LEFT((head)->sph_root, field) = NULL;         \
+                SPLAY_LEFT(elm, field) = SPLAY_LEFT((head)->sph_root, field);\
+                SPLAY_RIGHT(elm, field) = (head)->sph_root;             \
+                SPLAY_LEFT((head)->sph_root, field) = NULL;             \
             } else if (__comp > 0) {                                    \
-                    SPLAY_RIGHT(elm, field) = SPLAY_RIGHT((head)->sph_root, field);\
-                    SPLAY_LEFT(elm, field) = (head)->sph_root;          \
-                    SPLAY_RIGHT((head)->sph_root, field) = NULL;        \
+                SPLAY_RIGHT(elm, field) = SPLAY_RIGHT((head)->sph_root, field);\
+                SPLAY_LEFT(elm, field) = (head)->sph_root;              \
+                SPLAY_RIGHT((head)->sph_root, field) = NULL;            \
             } else                                                      \
                     return ((head)->sph_root);                          \
     }                                                                   \
@@ -187,24 +185,23 @@ name##_SPLAY_INSERT(struct name *head, struct type *elm)                \
 }                                                                       \
                                                                         \
 struct type *                                                           \
-name##_SPLAY_REMOVE(struct name *head, struct type *elm)                \
-{                                                                       \
-        struct type *__tmp;                                             \
-        if (SPLAY_EMPTY(head))                                          \
-                return (NULL);                                          \
-        name##_SPLAY(head, elm);                                        \
-        if ((cmp)(elm, (head)->sph_root) == 0) {                        \
-                if (SPLAY_LEFT((head)->sph_root, field) == NULL) {      \
-                        (head)->sph_root = SPLAY_RIGHT((head)->sph_root, field);\
-                } else {                                                \
-                        __tmp = SPLAY_RIGHT((head)->sph_root, field);   \
-                        (head)->sph_root = SPLAY_LEFT((head)->sph_root, field);\
-                        name##_SPLAY(head, elm);                        \
-                        SPLAY_RIGHT((head)->sph_root, field) = __tmp;   \
-                }                                                       \
-                return (elm);                                           \
+name##_SPLAY_REMOVE(struct name *head, struct type *elm) {              \
+    struct type *__tmp;                                                 \
+    if (SPLAY_EMPTY(head))                                              \
+       return (NULL);                                                   \
+    name##_SPLAY(head, elm);                                            \
+    if ((cmp) (elm, (head)->sph_root) == 0) {                           \
+        if (SPLAY_LEFT((head)->sph_root, field) == NULL) {              \
+            (head)->sph_root = SPLAY_RIGHT((head)->sph_root, field);    \
+        } else {                                                        \
+            __tmp = SPLAY_RIGHT((head)->sph_root, field);               \
+            (head)->sph_root = SPLAY_LEFT((head)->sph_root, field);     \
+            name##_SPLAY(head, elm);                                    \
+            SPLAY_RIGHT((head)->sph_root, field) = __tmp;               \
         }                                                               \
-        return (NULL);                                                  \
+        return (elm);                                                   \
+    }                                                                   \
+    return (NULL);                                                      \
 }                                                                       \
                                                                         \
 void                                                                    \
@@ -450,10 +447,9 @@ name##_RB_INSERT_COLOR(struct name *head, struct type *elm)             \
 }                                                                       \
                                                                         \
 attr void                                                               \
-name##_RB_REMOVE_COLOR(struct name *head, struct type *parent, struct type *elm) \
-{                                                                       \
-        struct type *tmp;                                               \
-        while ((elm == NULL || RB_COLOR(elm, field) == RB_BLACK) &&     \
+name##_RB_REMOVE_COLOR(struct name* head, struct type* parent, struct type* elm) { \
+    struct type *tmp;                                                   \
+    while ((elm == NULL || RB_COLOR(elm, field) == RB_BLACK) &&         \
             elm != RB_ROOT(head)) {                                     \
                 if (RB_LEFT(parent, field) == elm) {                    \
                         tmp = RB_RIGHT(parent, field);                  \

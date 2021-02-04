@@ -44,30 +44,31 @@
 //registered hook info collection
 typedef struct xh_core_hook_info {
 #if XH_CORE_DEBUG
-    char     *pathname_regex_str;
+    char* pathname_regex_str;
 #endif
-    regex_t   pathname_regex;
-    char     *symbol;
-    void     *new_func;
-    void    **old_func;
+    regex_t pathname_regex;
+    char* symbol;
+    void* new_func;
+    void** old_func;
     TAILQ_ENTRY(xh_core_hook_info,) link;
 } xh_core_hook_info_t;
+
 typedef TAILQ_HEAD(xh_core_hook_info_queue, xh_core_hook_info,) xh_core_hook_info_queue_t;
 
 //ignored hook info collection
 typedef struct xh_core_ignore_info {
 #if XH_CORE_DEBUG
-    char     *pathname_regex_str;
+    char* pathname_regex_str;
 #endif
-    regex_t   pathname_regex;
-    char     *symbol; //NULL meaning for all symbols
+    regex_t pathname_regex;
+    char* symbol; //NULL meaning for all symbols
     TAILQ_ENTRY(xh_core_ignore_info,) link;
 } xh_core_ignore_info_t;
 typedef TAILQ_HEAD(xh_core_ignore_info_queue, xh_core_ignore_info,) xh_core_ignore_info_queue_t;
 
 //required info from /proc/self/maps
 typedef struct xh_core_map_info {
-    char      *pathname;
+    char*      pathname;
     uintptr_t  base_addr;
     xh_elf_t   elf;
     RB_ENTRY(xh_core_map_info) link;
@@ -95,12 +96,14 @@ static void xh_core_sigsegv_handler(int sig) {
 static int xh_core_add_sigsegv_handler() {
     struct sigaction act;
 
-    if(!xh_core_sigsegv_enable) return 0;
+    if (!xh_core_sigsegv_enable) 
+        return 0;
     
-    if(0 != sigemptyset(&act.sa_mask)) return (0 == errno ? XH_ERRNO_UNKNOWN : errno);
+    if (0 != sigemptyset(&act.sa_mask)) 
+        return (0 == errno ? XH_ERRNO_UNKNOWN : errno);
     act.sa_handler = xh_core_sigsegv_handler;
     
-    if(0 != sigaction(SIGSEGV, &act, &xh_core_sigsegv_act_old))
+    if (0 != sigaction(SIGSEGV, &act, &xh_core_sigsegv_act_old))
         return (0 == errno ? XH_ERRNO_UNKNOWN : errno);
 
     return 0;
@@ -128,8 +131,10 @@ static volatile int                xh_core_refresh_thread_running = 0;
 static volatile int                xh_core_refresh_thread_do = 0;
 
 
-int xh_core_register(const char *pathname_regex_str, const char *symbol,
-                     void *new_func, void **old_func) {
+int xh_core_register(const char* pathname_regex_str, 
+                     const char* symbol,
+                     void* new_func, 
+                     void** old_func) {
 
     xh_core_hook_info_t* hi;
     regex_t regex;
@@ -138,7 +143,9 @@ int xh_core_register(const char *pathname_regex_str, const char *symbol,
         return XH_ERRNO_INVAL;
 
     if (xh_core_inited) {
-        XH_LOG_ERROR("do not register hook after refresh(): %s, %s", pathname_regex_str, symbol);
+        XH_LOG_ERROR("do not register hook after refresh(): %s, %s", 
+                pathname_regex_str, symbol);
+
         return XH_ERRNO_INVAL;
     }
 
@@ -240,14 +247,15 @@ static void xh_core_hook_impl(xh_core_map_info_t *mi) {
     xh_core_ignore_info_t *ii;
     int ignore;
     TAILQ_FOREACH(hi, &xh_core_hook_info, link) { // find hook info
-        if(0 == regexec(&(hi->pathname_regex), mi->pathname, 0, NULL, 0)) {
+        if (0 == regexec(&(hi->pathname_regex), mi->pathname, 0, NULL, 0)) {
             ignore = 0;
             TAILQ_FOREACH(ii, &xh_core_ignore_info, link) { // find ignore info
-                if(0 == regexec(&(ii->pathname_regex), mi->pathname, 0, NULL, 0)) {
+                if (0 == regexec(&(ii->pathname_regex), mi->pathname, 0, NULL, 0)) {
                     if (NULL == ii->symbol) //ignore all symbols
                         return;
 
-                    if (0 == strcmp(ii->symbol, hi->symbol)) { // ignore the current symbol
+                    // ignore the current symbol
+                    if (0 == strcmp(ii->symbol, hi->symbol)) { 
                         ignore = 1;
                         break;
                     }
@@ -277,21 +285,22 @@ static void xh_core_hook(xh_core_map_info_t* mi) {
 
 static void xh_core_refresh_impl() {
     char                     line[512];
-    FILE                    *fp;
+    FILE*                    fp;
     uintptr_t                base_addr;
     char                     perm[5];
     unsigned long            offset;
     int                      pathname_pos;
-    char                    *pathname;
+    char*                    pathname;
     size_t                   pathname_len;
-    xh_core_map_info_t      *mi, *mi_tmp;
+    xh_core_map_info_t*      mi; 
+    xh_core_map_info_t*      mi_tmp;
     xh_core_map_info_t       mi_key;
-    xh_core_hook_info_t     *hi;
-    xh_core_ignore_info_t   *ii;
+    xh_core_hook_info_t*     hi;
+    xh_core_ignore_info_t*   ii;
     int                      match;
     xh_core_map_info_tree_t  map_info_refreshed = RB_INITIALIZER(&map_info_refreshed);
 
-    if(NULL == (fp = fopen("/proc/self/maps", "r"))) {
+    if (NULL == (fp = fopen("/proc/self/maps", "r"))) {
         XH_LOG_ERROR("fopen /proc/self/maps failed");
         return;
     }
@@ -304,34 +313,40 @@ static void xh_core_refresh_impl() {
         }
 
         //check permission
-        if(perm[0] != 'r') continue;
-        if(perm[3] != 'p') continue; //do not touch the shared memory
+        if (perm[0] != 'r') {
+            continue;
+        }
+        if (perm[3] != 'p') {
+            continue; //do not touch the shared memory
+        }
 
         //check offset
         //
         //We are trying to find ELF header in memory.
         //It can only be found at the beginning of a mapped memory regions
         //whose offset is 0.
-        if(0 != offset) continue;
+        if (0 != offset) 
+            continue;
 
         //get pathname
         while(isspace(line[pathname_pos]) && pathname_pos < (int)(sizeof(line) - 1))
             pathname_pos += 1;
-        if(pathname_pos >= (int)(sizeof(line) - 1)) continue;
+        if (pathname_pos >= (int)(sizeof(line) - 1)) 
+            continue;
         pathname = line + pathname_pos;
         pathname_len = strlen(pathname);
-        if(0 == pathname_len) continue;
-        if(pathname[pathname_len - 1] == '\n') {
+        if (0 == pathname_len) 
+            continue;
+        if (pathname[pathname_len - 1] == '\n') {
             pathname[pathname_len - 1] = '\0';
             pathname_len -= 1;
         }
         if (0 == pathname_len)
             continue;
         if ('[' == pathname[0])
-        continue;
+            continue;
 
-        //check pathname
-        //if we need to hook this elf?
+        // check pathname if we need to hook this elf?
         match = 0;
         TAILQ_FOREACH(hi, &xh_core_hook_info, link) { //find hook info
             if (0 == regexec(&(hi->pathname_regex), pathname, 0, NULL, 0)) {
@@ -340,8 +355,9 @@ static void xh_core_refresh_impl() {
                         if (NULL == ii->symbol)
                             goto check_finished;
 
-                        if (0 == strcmp(ii->symbol, hi->symbol))
+                        if (0 == strcmp(ii->symbol, hi->symbol)) {
                             goto check_continue;
+                        }
                     }
                 }
 
@@ -351,11 +367,13 @@ static void xh_core_refresh_impl() {
             }
         }
     check_finished:
-        if(0 == match) continue;
+        if (0 == match) 
+            continue;
 
         //check elf header format
         //We are trying to do ELF header checking as late as possible.
-        if(0 != xh_core_check_elf_header(base_addr, pathname)) continue;
+        if (0 != xh_core_check_elf_header(base_addr, pathname)) 
+            continue;
         
         //check existed map item
         mi_key.pathname = pathname;
@@ -366,9 +384,9 @@ static void xh_core_refresh_impl() {
             //repeated?
             //We only keep the first one, that is the real base address
             if (NULL != RB_INSERT(xh_core_map_info_tree, &map_info_refreshed, mi)) {
-#if XH_CORE_DEBUG
+            #if XH_CORE_DEBUG
                 XH_LOG_DEBUG("repeated map info when update: %s", line);
-#endif
+            #endif
                 free(mi->pathname);
                 free(mi);
                 continue;
@@ -392,9 +410,9 @@ static void xh_core_refresh_impl() {
             //repeated?
             //We only keep the first one, that is the real base address
             if (NULL != RB_INSERT(xh_core_map_info_tree, &map_info_refreshed, mi)) {
-#if XH_CORE_DEBUG
+            #if XH_CORE_DEBUG
                 XH_LOG_DEBUG("repeated map info when create: %s", line);
-#endif
+            #endif
                 free(mi->pathname);
                 free(mi);
                 continue;
@@ -501,7 +519,9 @@ static void xh_core_init_async_once() {
     
     //create async refresh thread
     xh_core_refresh_thread_running = 1;
-    if (0 != pthread_create(&xh_core_refresh_thread_tid, NULL, &xh_core_refresh_thread_func, NULL)) {
+    if (0 != pthread_create(&xh_core_refresh_thread_tid, 
+            NULL, &xh_core_refresh_thread_func, NULL)) {
+
         xh_core_refresh_thread_running = 0;
         goto end;
     }
@@ -516,8 +536,9 @@ static void xh_core_init_async_once() {
 int xh_core_refresh(int async) {
     //init
     xh_core_init_once();
-    if (!xh_core_init_ok)
+    if (!xh_core_init_ok) {
         return XH_ERRNO_UNKNOWN;
+    }
 
     if (async) {
         //init for async

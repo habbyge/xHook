@@ -5,8 +5,7 @@
 #include <android/log.h>
 #include "xhook.h"
 
-static int my_system_log_print(int prio, const char* tag, const char* fmt, ...)
-{
+static int my_system_log_print(int prio, const char* tag, const char* fmt, ...) {
     va_list ap;
     char buf[1024];
     int r;
@@ -19,8 +18,7 @@ static int my_system_log_print(int prio, const char* tag, const char* fmt, ...)
     return r;
 }
 
-static int my_libtest_log_print(int prio, const char* tag, const char* fmt, ...)
-{
+static int my_libtest_log_print(int prio, const char* tag, const char* fmt, ...) {
     va_list ap;
     char buf[1024];
     int r;
@@ -33,8 +31,7 @@ static int my_libtest_log_print(int prio, const char* tag, const char* fmt, ...)
     return r;
 }
 
-void Java_com_qiyi_biz_NativeHandler_start(JNIEnv* env, jobject obj)
-{
+void Java_com_qiyi_biz_NativeHandler_start(JNIEnv* env, jobject obj) {
     (void)env;
     (void)obj;
 
