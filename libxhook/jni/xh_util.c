@@ -101,8 +101,9 @@ int xh_util_get_mem_protect(uintptr_t addr, size_t len, const char* pathname, un
     
   fclose(fp);
 
-  if (!found_all)
+  if (!found_all) {
     return XH_ERRNO_SEGVERR;
+  }
 
   return 0;
 }
@@ -112,8 +113,9 @@ int xh_util_get_addr_protect(uintptr_t addr, const char* pathname, unsigned int*
 }
 
 int xh_util_set_addr_protect(uintptr_t addr, unsigned int prot) {
-  if (0 != mprotect((void*) PAGE_START(addr), PAGE_COVER(addr), (int) prot))
+  if (0 != mprotect((void*) PAGE_START(addr), PAGE_COVER(addr), (int) prot)) {
     return 0 == errno ? XH_ERRNO_UNKNOWN : errno;
+  }
 
   return 0;
 }
