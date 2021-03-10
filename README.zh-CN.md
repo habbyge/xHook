@@ -13,6 +13,7 @@
 [Android PLT hook 概述 中文版](docs/overview/android_plt_hook_overview.zh-CN.md)
 
 xHook 是一个针对 Android 平台 ELF (可执行文件和动态库) 的 PLT (Procedure Linkage Table) hook 库。
+xhook is a PLT (Procedure Linkage Table) hook library for Android native ELF (executable and shared libraries).
 
 xHook 一直在稳定性和兼容性方面做着持续的优化。
 
@@ -56,10 +57,10 @@ adb install ./app/build/outputs/apk/debug/app-debug.apk
 ### 1. 注册 hook 信息
 
 ```c
-int xhook_register(const char  *pathname_regex_str,  
-                   const char  *symbol,  
-                   void        *new_func,  
-                   void       **old_func);
+int xhook_register(const char* pathname_regex_str,  
+                   const char* symbol,  
+                   void* new_func,  
+                   void** old_func);
 ```
 
 在当前进程的内存空间中，在每一个符合正则表达式 `pathname_regex_str` 的已加载ELF中，每一个调用 `symbol` 的 PLT 入口点的地址值都将给替换成 `new_func`。之前的 PLT 入口点的地址值将被保存在 `old_func` 中。
@@ -73,8 +74,7 @@ int xhook_register(const char  *pathname_regex_str,
 ### 2. 忽略部分 hook 信息
 
 ```c
-int xhook_ignore(const char *pathname_regex_str,  
-                 const char *symbol);
+int xhook_ignore(const char* pathname_regex_str, const char* symbol);
 ```
 
 根据 `pathname_regex_str` 和 `symbol`，从已经通过 `xhook_register` 注册的 hook 信息中，忽略一部分 hook 信息。如果 `symbol` 为 `NULL`，xhook 将忽略所有路径名符合正则表达式 `pathname_regex_str` 的 ELF。
