@@ -4,7 +4,8 @@
 #include <android/log.h>
 
 typedef int (*my_log_t) (int prio, const char* tag, const char* fmt, ...);
-my_log_t my_global_log_ptr = (my_log_t)__android_log_print;
+
+my_log_t my_global_log_ptr = (my_log_t) __android_log_print;
 
 static void* new_thread_func(void* arg) {
   (void) arg;

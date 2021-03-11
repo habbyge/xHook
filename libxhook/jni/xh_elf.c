@@ -348,7 +348,10 @@ static ElfW(Phdr)* xh_elf_get_first_segment_by_type(xh_elf_t* self, ElfW(Word) t
   return NULL;
 }
 
-static ElfW(Phdr)* xh_elf_get_first_segment_by_type_offset(xh_elf_t* self, ElfW(Word) type, ElfW(Off) offset) {
+static ElfW(Phdr)* xh_elf_get_first_segment_by_type_offset(xh_elf_t* self,
+                                                           ElfW(Word) type,
+                                                           ElfW(Off) offset) {
+
   ElfW(Phdr)* phdr;
 
   for (phdr = self->phdr; phdr < self->phdr + self->ehdr->e_phnum; phdr++) {
