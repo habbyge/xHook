@@ -21,6 +21,8 @@
 
 // Created by caikelun on 2018-04-11.
 
+// 这是 xhook lib 对外接口
+
 #ifndef XHOOK_H
 #define XHOOK_H 1
 
