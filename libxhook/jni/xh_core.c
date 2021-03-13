@@ -89,10 +89,11 @@ static sigjmp_buf       xh_core_sigsegv_env;
 static void xh_core_sigsegv_handler(int sig) {
   (void) sig;
 
-  if (xh_core_sigsegv_flag)
+  if (xh_core_sigsegv_flag) {
     siglongjmp(xh_core_sigsegv_env, 1);
-  else
+  } else {
     sigaction(SIGSEGV, &xh_core_sigsegv_act_old, NULL);
+  }
 }
 
 static int xh_core_add_sigsegv_handler() {
@@ -135,8 +136,7 @@ static volatile int                xh_core_refresh_thread_do = 0;
 
 int xh_core_register(const char* pathname_regex_str, 
                      const char* symbol,
-                     void* new_func, 
-                     void** old_func) {
+                     void* new_func, void** old_func) {
 
   xh_core_hook_info_t* hi;
   regex_t regex;
